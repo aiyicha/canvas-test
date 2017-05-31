@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<body>
+<div><input type = 'button' id = 'btn' value='take snapshot'/></div>
+<canvas id='newCanvas' width='1000px' height='1000px' >
+</canvas>
+<img id = 'snapshotImage'/>
+
+
+<style>
+	#newCanvas{
+		position:absolute;
+		left:10px;
+		top:50px;
+	}
+	#snapshotImage{
+		position:absolute;
+		left:10px;
+		top:50px;
+	}
+</style>
+
+<script>
+var newCanvas = document.getElementById('newCanvas');
+var context = newCanvas.getContext('2d');
+
+function drawSmall(context){
+	context.save();
+	context.save();
+	context.beginPath();
+	context.shadowBlur = 8;
+	context.shadowColor = 'red';
+	context.strokeStyle = "rgb(100,75,100)";
+	context.arc(100,100,99,0,2*Math.PI,true);
+	context.stroke();
+	context.shadowBlur = 0;
+	context.beginPath();
+	context.fillStyle = "rgba(100,100,100,0.8)";
+	context.arc(100,100,99,0,2*Math.PI,true);
+	context.fill();
+	context.beginPath();
+	context.fillStyle = "rgba(120,120,120,0.5)";
+	//context.globalCompositeOperation = 'source-over';
+	context.moveTo(194,100);
+	context.arc(100,100,94,0,2*Math.PI,true);
+	context.fill();
+	context.beginPath();
+	context.strokeStyle = "rgb(120,120,120)";
+	context.arc(100,100,94,0,2*Math.PI,true);
+	context.stroke();
+	
+	context.restore();
+	context.beginPath();
+	context.translate(100,100);
+	context.font = 'italic small-caps bold 12px arial';
+	var numbers = [1,2,3,4,5,6,7,8,9,10,11,12];
+	context.fillStyle = "rgba(150,50,50,1)";
+	numbers.forEach(function(item){
+
+		textLength = context.measureText(item).width;
+		textHeight = -5;
+		
+		context.fillText(item,80*Math.sin((item*30)/180*Math.PI)-textLength/2,-80*Math.cos((item*30)/180*Math.PI)-textHeight);
+	});
+	
+	
+	for(var i=0;i<12;i++){
+		context.moveTo(89*Math.cos(i*30/180*Math.PI),89*Math.sin(i*30/180*Math.PI));
+		context.lineTo(94*Math.cos(i*30/180*Math.PI),94*Math.sin(i*30/180*Math.PI));
+	}
+	context.stroke();
+	context.lineWidth = 0.5;
+	for(var j=0;j<60;j++){
+		context.moveTo(92*Math.cos(j*6/180*Math.PI),92*Math.sin(j*6/180*Math.PI));
+		context.lineTo(94*Math.cos(j*6/180*Math.PI),94*Math.sin(j*6/180*Math.PI));
+	}
+	context.stroke();
+	context.restore();
+}
+
+function drawStick(context){
+	var time = new Date();
+	var hour = time.getHours();
+	if (hour>12){hour = hour-12;}
+	var minute = time.getMinutes();
+	var second = time.getSeconds();
+	
+	context.save();
+	context.beginPath();
+	context.translate(100,100);
+	context.lineCap = 'round';
+	
+	context.lineWidth = 2.5;
+	context.moveTo(0,0);
+	context.lineTo(40*Math.sin((hour/12+minute/60/12)*2*Math.PI),-40*Math.cos((hour/12+minute/60/12)*2*Math.PI));
+	context.stroke();
+
+	context.lineWidth = 1.8;
+	context.moveTo(0,0);
+	context.lineTo(60*Math.sin((minute/60+second/60/60)*2*Math.PI),-60*Math.cos((minute/60+second/60/60)*2*Math.PI));
+	context.stroke();
+
+	context.lineWidth = 1;
+	context.moveTo(0,0);
+	context.lineTo(80*Math.sin((second/60)*2*Math.PI),-80*Math.cos((second/60)*2*Math.PI));
+	context.stroke();
+	context.restore();	
+}
+
+function drawNewTime(context){
+	context.clearRect(0,0,500,500);
+	drawSmall(context);
+	context.beginPath();
+	drawStick(context);
+	context.beginPath();
+	context.fillStyle = "rgba(255,50,50,1)";
+	context.arc(100,100,2.5,0,2*Math.PI);
+	context.fill();
+	//setTimeout(function(){drawNewTime(context)},100);	
+	requestAnimationFrame(function(){drawNewTime(context)});
+}
+
+context.scale(4,4);
+drawNewTime(context);
+
+var snapFlg = false;
+var dataurl = '';
+var btn = document.getElementById('btn');
+var image = document.getElementById('snapshotImage');
+btn.onclick = function(){
+	snapFlg = !snapFlg;
+	if(snapFlg){
+		dataurl = newCanvas.toDataURL();
+		image.src = dataurl;
+		image.style.display = 'inline';
+		newCanvas.style.display = 'none';
+		btn.value = 'back to canvas';
+	} else {
+		btn.value = 'take snapshot';
+		newCanvas.style.display = 'inline';
+		image.style.display = 'none';
+	}
+	
+}
+
+
+</script>
+
+</body>
+
+
+
+</html>

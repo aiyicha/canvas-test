@@ -1,0 +1,87 @@
+<!doctype html>
+<body>
+<canvas id='canvas' style="border:1px solid black">canvas not supported</canvas>
+<div id = 'text'></div>
+<script>
+    var canvas = document.getElementById('canvas'),
+        context = canvas.getContext('2d'),
+        image = new Image(),
+        text = document.getElementById('text');
+    canvas.width = 600;
+    canvas.height = 600;
+
+    function windowToCanvas(canvas,x,y){
+        var bbox = canvas.getBoundingClientRect();
+        return {
+            x:(x-bbox.left) * (canvas.width/bbox.width),
+            y:(y-bbox.top) * (canvas.height/bbox.height)
+        }
+    }
+
+    function drawBackground(){
+        var VERTICAL_LINE_SPACING = 12;
+        var i = context.canvas.height;
+        context.clearRect(0,0,canvas.width,canvas.height);
+        context.strokeStyle = 'lightgray';
+        context.lineWidth = 0.5;
+        while(i > 0) {
+            context.beginPath();
+            context.moveTo(0, i);
+            context.lineTo(context.canvas.width, i);
+            context.stroke();
+            i -= VERTICAL_LINE_SPACING;
+        }
+    }
+
+    function drawImage(){
+        context.drawImage(image, 0, 0);
+    }
+
+    function drawGuideLines(x, y){
+        context.strokeStyle = 'rgba(0,0,230,0.8)';
+        context.lineWidth = 0.5;
+        drawVerticalLine(x);
+        drawHorizontalLine(y);
+    }
+
+    function drawVerticalLine(x){
+        context.beginPath();
+        context.moveTo(x+0.5,0);
+        context.lineTo(x+0.5, context.canvas.height);
+        context.stroke();
+    }
+
+    function drawHorizontalLine(y){
+        context.beginPath();
+        context.moveTo(0,y+0.5);
+        context.lineTo(context.canvas.width,y+0.5);
+        context.stroke();
+    }
+
+    canvas.onmousemove = function(e){
+        var loc = windowToCanvas(canvas,e.clientX,e.clientY);
+        drawBackground();
+        drawImage();
+        drawGuideLines(loc.x,loc.y);
+        text.innerText = 'x: '+loc.x+'      y: '+loc.y;
+    };
+
+    image.src = 'C:/Users/Administrator/Desktop/u=1302514172,3314204411&fm=23&gp=0.jpg';
+    image.onload = function(){
+        drawImage();
+    };
+
+    drawBackground();
+
+
+</script>
+
+<style>
+    #canvas{
+        width:1200px;
+        height:1200px
+    }
+</style>
+
+</body>
+</html>

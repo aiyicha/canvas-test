@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<body>
+<input type="file" id="img" accept="image/png,image/gif,image/jpg,image/jpeg" >
+<input type = 'button' id="btn" value="reverse">
+<canvas id='canvas' width='500px' height='500px' ></canvas>
+
+
+<style>
+	#canvas{
+		position:absolute;
+		left:10px;
+		top:50px;
+		cursor:crosshair;
+		border:1px solid black;
+	}
+
+</style>
+
+<script>
+	var canvas = document.getElementById('canvas');
+	var context = canvas.getContext('2d');
+	var file = document.getElementById('img');
+	var btn = document.getElementById('btn');
+	var img = new Image();
+
+
+	file.addEventListener('change',function(e){
+		var fl = e.target.files[0];
+		img.src = window.URL.createObjectURL(fl);
+	});
+
+	img.onload = function(){
+		context.clearRect(0,0,500,500);
+		context.drawImage(img,0,0,250,250);
+	}
+
+	btn.addEventListener('click', function(){
+		var imageData = context.getImageData(0,0,250,250);
+		var length = imageData.data.length;
+		for (var i=0;i<length;i+=4){
+			imageData.data[i] = 255-imageData.data[i];
+			imageData.data[i+1] = 255-imageData.data[i+1];
+			imageData.data[i+2] = 255-imageData.data[i+2];
+			imageData.data[i+3] = 255;
+		}
+		context.clearRect(0,0,500,500);
+		context.putImageData(imageData,0,0);
+	});
+
+
+
+
+
+
+</script>
+
+</body>
+
+
+
+</html>

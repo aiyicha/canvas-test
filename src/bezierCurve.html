@@ -1,0 +1,102 @@
+<!doctype html>
+<body>
+
+<canvas id='myCanvas' width='400px' height='400px'></canvas>
+<script>
+var canvas = document.getElementById('myCanvas');
+var context = canvas.getContext('2d');
+var BezierCurve = function(context,time){
+	this.context = context;
+	this.time = time;
+}
+
+var face = function(context){
+	var _context = context;
+	_context.beginPath();
+	_context.strokeStyle = 'green';
+	_context.moveTo(x0,y0);
+	_context.lineTo(x1,y1);
+	_context.lineTo(x2,y2);
+	_context.lineTo(x3,y3);
+	_context.stroke();
+}
+
+var saveTen = [];
+function drawLine(context){
+	var _context = context;
+	_context.strokeStyle = 'blue';
+	_context.beginPath();
+	_context.moveTo(saveTen[0].x,saveTen[0].y);
+	for (var i=1;i<saveTen.length;i++){
+		_context.lineTo(saveTen[i].x,saveTen[i].y);
+	}
+	_context.stroke();
+}
+
+var x0,y0,x1,y1,x2,y2,x3,y3,x01,y01,x12,y12,x23,y23,x012,y012,x123,y123,x0123,y0123;
+x0 = 80;
+y0 = 200;
+x1 = 100;
+y1 = 100;
+x2 = 200;
+y2 = 100;
+x3 = 350;
+y3 = 200;
+
+var drawCircle = function(context,t,c){
+	context.clearRect(0, 0, 500, 500); 
+	face(context,x0,y0,x1,y1,x2,y2,x3,y3);
+	var _context = context;
+	x01 = x0+(x1-x0)*c/t;
+	y01 = y0+(y1-y0)*c/t;
+	x12 = x1+(x2-x1)*c/t;
+	y12 = y1+(y2-y1)*c/t;
+	x23 = x2+(x3-x2)*c/t;
+	y23 = y2+(y3-y2)*c/t;
+	x012 = x01+(x12-x01)*c/t;
+	y012 = y01+(y12-y01)*c/t;
+	x123 = x12+(x23-x12)*c/t;
+	y123 = y12+(y23-y12)*c/t;
+	x0123 = x012+(x123-x012)*c/t;
+	y0123 = y012+(y123-y012)*c/t;
+	_context.beginPath();
+	_context.moveTo(x01,y01);
+	_context.lineTo(x12,y12);
+	_context.lineTo(x23,y23);
+	
+	_context.moveTo(x012,y012);
+	_context.lineTo(x123,y123);
+	
+	_context.stroke();
+	
+	_context.beginPath();
+	_context.fillStyle = 'red';
+	_context.moveTo(x0123,y0123);
+	_context.arc(x0123,y0123,3,0,2*Math.PI);
+	_context.fill();
+	
+	var ten = {
+		x:x0123,
+		y:y0123
+	};
+	saveTen.push(ten);
+	drawLine(_context);
+	
+	if (c<t){
+		setTimeout(function(){drawCircle(context,t,c+10);},10);
+	} else {
+		saveTen = [];
+		setTimeout(function(){drawCircle(context,t,0);},10);
+	}
+}
+
+var bezierCurve = new BezierCurve(context);
+drawCircle(context,5000,0);
+
+</script>
+
+
+</body>
+
+
+</html>

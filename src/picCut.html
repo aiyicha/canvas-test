@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<body>
+<div><input type = 'button' id = 'btn' value='reset'/></div>
+<div id = 'slt'></div>
+<canvas id='newCanvas' width='356px' height='300px' ></canvas>
+
+
+<style>
+	#slt{
+		position:absolute;
+		border:3px solid pink;
+		display:none;
+		z-index: 99;
+	}
+	#newCanvas{
+		position:absolute;
+		left:10px;
+		top:50px;
+		cursor:crosshair;
+		border:1px solid black;
+	}
+
+</style>
+
+<script>
+	var newCanvas = document.getElementById('newCanvas');
+	var context = newCanvas.getContext('2d');
+	var sltDiv = document.getElementById('slt');
+	var btn = document.getElementById('btn');
+	var img = new Image();
+	img.src = 'C:/Users/Administrator/Desktop/u=1302514172,3314204411&fm=23&gp=0.jpg';
+	var x,y;
+	var xe,ye;
+	var flg = false;
+
+	newCanvas.addEventListener('mousedown',function(e){
+		e.preventDefault();
+		x = e.clientX;
+		y = e.clientY;
+		sltDiv.style.display = 'inline';
+		sltDiv.style.left = x+'px';
+		sltDiv.style.top = y+'px';
+		flg = true;
+	});
+
+	window.addEventListener('mousemove',function(e){
+		//context.clearRect(0,0,newCanvas.width,newCanvas.height);
+		//context.drawImage(img,0,0);
+
+		if(flg){
+			xe = e.clientX;
+			ye = e.clientY;
+			e.preventDefault();
+			xe = xe>x?xe:x;
+			ye = ye>y?ye:y;
+			sltDiv.style.width = Math.abs(xe-x)+'px';
+			sltDiv.style.height = Math.abs(ye-y)+'px';
+		}
+	});
+
+	window.addEventListener('mouseup',function(e){
+		if(e.clientX == x && e.clientY == y){
+			return;
+		}
+		if(e.target==btn){
+			return;
+		}
+		e.preventDefault();
+		//context.clearRect(0,0,newCanvas.width,newCanvas.height);
+		context.drawImage(newCanvas,x-newCanvas.getBoundingClientRect().left,y-newCanvas.getBoundingClientRect().top,
+				Math.abs(xe-x),Math.abs(ye-y),0,0,newCanvas.width,newCanvas.height);
+		//img.src = newCanvas.toDataURL();
+		sltDiv.style.display = 'none';
+		flg = false;
+		sltDiv.style.width = 0+'px';
+		sltDiv.style.height = 0+'px';
+	});
+
+	/*newCanvas.addEventListener('mouseleave',function(e){
+		e.preventDefault();
+		sltDiv.style.display = 'none';
+		flg = false;
+	});*/
+
+	btn.addEventListener('click',function(){
+		x = 0;
+		y = 0;
+		xe = 0;
+		ye = 0;
+		flg = false;
+		sltDiv.style.display = 'none';
+		context.drawImage(img,0,0);
+	});
+
+	img.onload = function(){
+		context.drawImage(img,0,0);
+	};
+
+
+
+
+
+
+
+</script>
+
+</body>
+
+
+
+</html>
