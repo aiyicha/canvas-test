@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<body>
+<canvas id='my-canvas'>
+
+
+</canvas>
+
+<script>
+	var canvas = document.getElementById("my-canvas");
+	var ctx = canvas.getContext("2d");
+	ctx.lineWidth = 4;
+	function draw(ctx, j){
+	    ctx.clearRect(0, 0, 100, 100);
+		var k=1;
+		for (var i=j;i<j+361;i++){
+		    ctx.beginPath();
+			ctx.strokeStyle = 'rgba(20,160,160,'+k/360+')';
+			ctx.arc(50,50,20,i/180*Math.PI,(i+1)/180*Math.PI);
+			ctx.stroke();
+			k++;
+		}
+		if (j>360) 
+			j=0;
+		setTimeout(function(){
+			draw(ctx,j+10);
+		},16);
+		
+	}
+	draw(ctx, 0);
+	
+	
+	
+</script>
+
+</body>
+</html>
